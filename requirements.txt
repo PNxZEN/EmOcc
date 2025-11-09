@@ -1,0 +1,27 @@
+# Core Dependencies
+# torch>=1.2.0
+# torchvision>=0.4.0
+
+# Deep Learning & Neural Networks
+numpy>=1.16.0
+
+# Image Processing
+opencv-python>=3.4.2
+Pillow>=6.0.0
+
+# Data Processing
+pandas>=0.24.0
+
+# HTTP Requests (for downloading pretrained models)
+requests>=2.22.0
+
+# Utilities
+tqdm>=4.32.0
+
+# CUDA Support (optional, for GPU acceleration)
+# cudatoolkit==10.0.130
+# cudnn==7.6.4
+
+# Note: For GPU support, install PyTorch with CUDA from:
+# pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+# or visit https://pytorch.org/get-started/locally/ for other CUDA versions
