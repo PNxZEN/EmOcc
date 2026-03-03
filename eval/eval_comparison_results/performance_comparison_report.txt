@@ -1,0 +1,13 @@
+================================================================================
+TEACHER vs STUDENT: OCCLUDED FACE PERFORMANCE COMPARISON
+================================================================================
+
+HYPOTHESIS:
+The student model, trained with curriculum learning and spatial attention,
+should outperform the teacher on occluded faces while maintaining comparable
+performance on clean faces.
+
+--------------------------------------------------------------------------------
+1. OVERALL ACCURACY
+--------------------------------------------------------------------------------
+FED-RO (Occluded Faces):

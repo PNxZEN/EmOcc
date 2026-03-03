@@ -1,0 +1,43 @@
+================================================================================
+FED-RO Evaluation: Teacher vs Student Model Comparison
+================================================================================
+
+Overall Metrics:
+--------------------------------------------------------------------------------
+Cosine Similarity:
+  Mean:  0.937027
+  Std:   0.036791
+  Min:   0.720157
+  Max:   0.994492
+
+L2 Distance:
+  Mean:  0.341103
+  Std:   0.097956
+  Min:   0.104960
+  Max:   0.748121
+
+Per-Emotion Metrics:
+--------------------------------------------------------------------------------
+Emotion      Count    Cos Sim Mean    Cos Sim Std     L2 Dist Mean    L2 Dist Std    
+--------------------------------------------------------------------------------
+Anger        53       0.942382        0.030915        0.328606        0.085169       
+Disgust      51       0.932234        0.039062        0.351966        0.107950       
+Fear         58       0.937976        0.037013        0.337399        0.101048       
+Happy        59       0.927904        0.044258        0.364712        0.105718       
+Neural       50       0.942349        0.030045        0.329111        0.083595       
+Sad          66       0.935838        0.038747        0.343306        0.102302       
+Surprise     63       0.941093        0.031749        0.331330        0.089633       
+
+================================================================================
+Interpretation Guide:
+--------------------------------------------------------------------------------
+Cosine Similarity:
+  > 0.95: Excellent alignment (very similar embeddings)
+  0.90 - 0.95: Good alignment (student closely follows teacher)
+  0.85 - 0.90: Acceptable alignment (minor differences)
+  < 0.85: Poor alignment (student diverging from teacher)
+
+L2 Distance:
+  < 0.5: Very close embeddings
+  0.5 - 1.0: Moderate distance
+  > 1.0: Large distance

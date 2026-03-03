@@ -1,14 +1,72 @@
-# directories
-utils/__pycache__/
-models/__pycache__/
-data/__pycache__/
-data/train/
+﻿# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env/
+.venv/
+.pytest_cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
 .idea/
 
-# files
-*.csv
-*.pdf
-*.zip
+# Weights and Models
+*.pth
 *.pt
-*.log
-*.pyc
+!pretrained/*.txt
+
+# Logs and Outputs (ignore everything inside these directories EXCEPT the placeholder .txt files)
+comparison_results/*
+!comparison_results/*.txt
+
+logs/*
+!logs/*.txt
+logs/curriculum/*
+!logs/curriculum/*.txt
+
+figures/training/*
+!figures/training/*.txt
+
+eval/eval/*
+!eval/eval/*.txt
+
+eval/eval_comparison_results/*
+!eval/eval_comparison_results/*.txt
+
+umap/umap/*
+!umap/umap/*.txt
+
+checkpoints/*
+!checkpoints/*.txt
+checkpoints/curriculum/*
+!checkpoints/curriculum/*.txt
+
+# Datasets (ignore heavy data but keep the txt placeholders)
+data/AffectNet/*
+!data/AffectNet/*.txt
+
+data/expw_dataset/*
+!data/expw_dataset/*.txt
+
+data/FEC_dataset/*
+!data/FEC_dataset/*.txt
+
+data/FED-RO/*
+!data/FED-RO/*.txt
+
+data/KDEF/*
+!data/KDEF/*.txt
+
+data/LFW/*
+!data/LFW/*.txt
+
+data/RAFDB/*
+!data/RAFDB/*.txt

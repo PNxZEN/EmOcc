@@ -155,4 +155,5 @@ class DenseNet(nn.Module):
         out = F.relu6(features, inplace=True)
         out = F.avg_pool2d(out, kernel_size=[7, 7]).view(features.size(0), -1)
         out = self.classifier(out)
+        # out = F.normalize(out, p=2, dim=1)  # ✓ L2 normalize to unit sphere
         return out
