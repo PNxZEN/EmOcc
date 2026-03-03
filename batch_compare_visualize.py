@@ -10,12 +10,16 @@ import glob
 from PIL import Image, ImageDraw, ImageFont
 import torchvision.transforms as transforms
 from models.FECNet import FECNet
+<<<<<<< HEAD
 from models.student_fecnet import StudentFECNet
+=======
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
 from models.mtcnn import MTCNN
 import numpy as np
 from itertools import combinations
 
 
+<<<<<<< HEAD
 def load_model(model_path, device='cuda', is_student=False):
     """Load pretrained FECNet or Student model."""
     print(f"Loading {'student' if is_student else 'teacher'} model from {model_path}...")
@@ -29,6 +33,14 @@ def load_model(model_path, device='cuda', is_student=False):
         state_dict = torch.load(model_path, map_location=device)
         model.load_state_dict(state_dict)
     
+=======
+def load_model(model_path, device='cuda'):
+    """Load pretrained FECNet model."""
+    print(f"Loading model from {model_path}...")
+    model = FECNet(pretrained=False)
+    state_dict = torch.load(model_path, map_location=device)
+    model.load_state_dict(state_dict)
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
     model.eval()
     model = model.to(device)
     print("Model loaded successfully!")
@@ -67,6 +79,7 @@ def preprocess_image(image_path, mtcnn, device='cuda'):
     return img_tensor, face_pil
 
 
+<<<<<<< HEAD
 def extract_embeddings(model, img_tensor, is_student=False):
     """Extract both face features and expression embeddings."""
     with torch.no_grad():
@@ -79,6 +92,13 @@ def extract_embeddings(model, img_tensor, is_student=False):
             # Teacher model (FECNet)
             face_features = model.Inc(img_tensor)[1]
             expression_embedding = model(img_tensor)
+=======
+def extract_embeddings(model, img_tensor):
+    """Extract both face features and expression embeddings."""
+    with torch.no_grad():
+        face_features = model.Inc(img_tensor)[1]
+        expression_embedding = model(img_tensor)
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
     
     return face_features.cpu().numpy(), expression_embedding.cpu().numpy()
 
@@ -123,6 +143,7 @@ def compute_combined_similarity(face_feat1, expr_emb1, face_feat2, expr_emb2):
     return 1 - combined_dissim
 
 
+<<<<<<< HEAD
 def create_comparison_image(target_path, target_face, sorted_student, sorted_teacher, output_path, top_k=5, img_size=200):
     """Create a visualization showing target image and sorted similar images from both models."""
     # Limit to top k results
@@ -132,6 +153,19 @@ def create_comparison_image(target_path, target_face, sorted_student, sorted_tea
     # Fixed layout: 3 rows (Target, Student, Teacher) x (1 + top_k) columns
     rows = 3
     cols = 1 + top_k  # 1 for label/target, top_k for results
+=======
+def create_comparison_image(target_path, target_face, sorted_comparisons, output_path, img_size=200):
+    """Create a visualization showing target image and sorted similar images."""
+    n_images = len(sorted_comparisons) + 1  # target + comparisons
+    
+    # Calculate grid dimensions (prefer horizontal layout)
+    if n_images <= 5:
+        cols = n_images
+        rows = 1
+    else:
+        cols = 5
+        rows = (n_images + cols - 1) // cols
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
     
     # Image dimensions
     margin = 20
@@ -151,12 +185,18 @@ def create_comparison_image(target_path, target_face, sorted_student, sorted_tea
         title_font = ImageFont.truetype("arial.ttf", 24)
         label_font = ImageFont.truetype("arial.ttf", 14)
         score_font = ImageFont.truetype("arial.ttf", 12)
+<<<<<<< HEAD
         row_label_font = ImageFont.truetype("arial.ttf", 16)
+=======
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
     except:
         title_font = ImageFont.load_default()
         label_font = ImageFont.load_default()
         score_font = ImageFont.load_default()
+<<<<<<< HEAD
         row_label_font = ImageFont.load_default()
+=======
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
     
     # Draw title
     title = f"Expression Similarity Analysis: {os.path.basename(target_path)}"
@@ -164,6 +204,7 @@ def create_comparison_image(target_path, target_face, sorted_student, sorted_tea
     title_width = title_bbox[2] - title_bbox[0]
     draw.text(((canvas_width - title_width) // 2, 20), title, fill='black', font=title_font)
     
+<<<<<<< HEAD
     y_base = 60 + margin
     
     # Row 1: Target Image (centered in first column)
@@ -182,6 +223,19 @@ def create_comparison_image(target_path, target_face, sorted_student, sorted_tea
     # Draw green border for target
     draw.rectangle(
         [x_target-2, row_y-2, x_target+img_size+2, row_y+img_size+2],
+=======
+    # Draw target image (first position)
+    y_offset = 60 + margin
+    x_offset = margin
+    
+    # Resize and paste target
+    target_resized = target_face.resize((img_size, img_size), Image.Resampling.LANCZOS)
+    canvas.paste(target_resized, (x_offset, y_offset))
+    
+    # Draw green border for target
+    draw.rectangle(
+        [x_offset-2, y_offset-2, x_offset+img_size+2, y_offset+img_size+2],
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
         outline='green', width=4
     )
     
@@ -190,6 +244,7 @@ def create_comparison_image(target_path, target_face, sorted_student, sorted_tea
     label_bbox = draw.textbbox((0, 0), label, font=label_font)
     label_width = label_bbox[2] - label_bbox[0]
     draw.text(
+<<<<<<< HEAD
         (x_target + (img_size - label_width) // 2, row_y + img_size + 5),
         label, fill='green', font=label_font
     )
@@ -208,6 +263,23 @@ def create_comparison_image(target_path, target_face, sorted_student, sorted_tea
         # Resize and paste comparison image
         comp_resized = comp_face.resize((img_size, img_size), Image.Resampling.LANCZOS)
         canvas.paste(comp_resized, (x, row_y))
+=======
+        (x_offset + (img_size - label_width) // 2, y_offset + img_size + 5),
+        label, fill='green', font=label_font
+    )
+    
+    # Draw sorted comparison images
+    for idx, (comp_path, comp_face, similarity) in enumerate(sorted_comparisons, 1):
+        row = idx // cols
+        col = idx % cols
+        
+        x = margin + col * (img_width + margin)
+        y = y_offset + row * (img_height + margin)
+        
+        # Resize and paste comparison image
+        comp_resized = comp_face.resize((img_size, img_size), Image.Resampling.LANCZOS)
+        canvas.paste(comp_resized, (x, y))
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
         
         # Draw border with color based on similarity
         if similarity > 0.85:
@@ -218,7 +290,11 @@ def create_comparison_image(target_path, target_face, sorted_student, sorted_tea
             color = 'red'
         
         draw.rectangle(
+<<<<<<< HEAD
             [x-2, row_y-2, x+img_size+2, row_y+img_size+2],
+=======
+            [x-2, y-2, x+img_size+2, y+img_size+2],
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
             outline=color, width=3
         )
         
@@ -227,6 +303,7 @@ def create_comparison_image(target_path, target_face, sorted_student, sorted_tea
         if len(filename) > 15:
             filename = filename[:12] + "..."
         
+<<<<<<< HEAD
         label_y = row_y + img_size + 5
         draw.text((x + 5, label_y), f"#{idx+1}: {filename}", fill='black', font=label_font)
         
@@ -268,6 +345,10 @@ def create_comparison_image(target_path, target_face, sorted_student, sorted_tea
         
         label_y = row_y + img_size + 5
         draw.text((x + 5, label_y), f"#{idx+1}: {filename}", fill='black', font=label_font)
+=======
+        label_y = y + img_size + 5
+        draw.text((x + 5, label_y), f"#{idx}: {filename}", fill='black', font=label_font)
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
         
         score_text = f"Score: {similarity:.4f}"
         draw.text((x + 5, label_y + 20), score_text, fill=color, font=score_font)
@@ -283,16 +364,24 @@ def main():
                         help='Paths to input images or glob patterns (e.g., examples/*.jpg)')
     parser.add_argument('--output-dir', type=str, default='comparison_results',
                         help='Directory to save comparison visualizations')
+<<<<<<< HEAD
     parser.add_argument('--student-model', type=str, default='checkpoints/curriculum/student_best.pth',
                         help='Path to pretrained student model')
     parser.add_argument('--teacher-model', type=str, default='pretrained/FECNet.pt',
                         help='Path to pretrained teacher model')
+=======
+    parser.add_argument('--model', type=str, default='pretrained/FECNet.pt',
+                        help='Path to pretrained model')
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
     parser.add_argument('--device', type=str, default='cuda',
                         help='Device to use: cuda or cpu')
     parser.add_argument('--img-size', type=int, default=200,
                         help='Size of images in visualization (default: 200)')
+<<<<<<< HEAD
     parser.add_argument('--top-k', type=int, default=5,
                         help='Number of top similar images to show (default: 5)')
+=======
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
     
     args = parser.parse_args()
     
@@ -343,11 +432,18 @@ def main():
     print(f"Using device: {device}")
     print("=" * 80)
     
+<<<<<<< HEAD
     # Initialize MTCNN and models
     print("Initializing face detector and models...")
     mtcnn = MTCNN(device=device)
     student_model = load_model(args.student_model, device=device, is_student=True)
     teacher_model = load_model(args.teacher_model, device=device, is_student=False)
+=======
+    # Initialize MTCNN and model
+    print("Initializing face detector and model...")
+    mtcnn = MTCNN(device=device)
+    model = load_model(args.model, device=device)
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
     print("=" * 80)
     
     # Process all images
@@ -373,6 +469,7 @@ def main():
                 failed_images.append(img_path)
                 continue
             
+<<<<<<< HEAD
             # Extract embeddings from both models
             student_face_feat, student_expr_emb = extract_embeddings(student_model, img_tensor, is_student=True)
             teacher_face_feat, teacher_expr_emb = extract_embeddings(teacher_model, img_tensor, is_student=False)
@@ -382,6 +479,13 @@ def main():
                 'student_expression_embedding': student_expr_emb,
                 'teacher_face_features': teacher_face_feat,
                 'teacher_expression_embedding': teacher_expr_emb,
+=======
+            face_feat, expr_emb = extract_embeddings(model, img_tensor)
+            
+            image_data[img_path] = {
+                'face_features': face_feat,
+                'expression_embedding': expr_emb,
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
                 'face_image': face_pil
             }
             print(f"  Successfully processed")
@@ -402,16 +506,24 @@ def main():
     print("Computing similarities...")
     print("-" * 80)
     
+<<<<<<< HEAD
     student_similarity_matrix = {}
     teacher_similarity_matrix = {}
+=======
+    similarity_matrix = {}
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
     image_paths = list(image_data.keys())
     
     for i, target_path in enumerate(image_paths):
         print(f"[{i+1}/{len(image_paths)}] Computing similarities for: {os.path.basename(target_path)}")
         
         target_data = image_data[target_path]
+<<<<<<< HEAD
         student_comparisons = []
         teacher_comparisons = []
+=======
+        comparisons = []
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
         
         for comp_path in image_paths:
             if comp_path == target_path:
@@ -419,6 +531,7 @@ def main():
             
             comp_data = image_data[comp_path]
             
+<<<<<<< HEAD
             # Student model similarity
             student_similarity = compute_combined_similarity(
                 target_data['student_face_features'],
@@ -451,6 +564,25 @@ def main():
         
         print(f"  Teacher - Top 3 most similar:")
         for rank, (path, _, sim) in enumerate(teacher_comparisons[:3], 1):
+=======
+            similarity = compute_combined_similarity(
+                target_data['face_features'],
+                target_data['expression_embedding'],
+                comp_data['face_features'],
+                comp_data['expression_embedding']
+            )
+            
+            comparisons.append((comp_path, comp_data['face_image'], similarity))
+        
+        # Sort by similarity (descending - most similar first)
+        comparisons.sort(key=lambda x: x[2], reverse=True)
+        
+        similarity_matrix[target_path] = comparisons
+        
+        # Print top 3 most similar
+        print(f"  Top 3 most similar:")
+        for rank, (path, _, sim) in enumerate(comparisons[:3], 1):
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
             print(f"    {rank}. {os.path.basename(path)}: {sim:.4f}")
     
     # Create visualizations
@@ -465,10 +597,15 @@ def main():
         create_comparison_image(
             target_path,
             image_data[target_path]['face_image'],
+<<<<<<< HEAD
             student_similarity_matrix[target_path],
             teacher_similarity_matrix[target_path],
             output_path,
             args.top_k,
+=======
+            similarity_matrix[target_path],
+            output_path,
+>>>>>>> 0131db3ce43a45972453dde70b8267e21d9bbce4
             args.img_size
         )
     
